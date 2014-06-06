@@ -14,9 +14,9 @@ General recommendation is to keep N and K less than M (or the whole thing won't 
 
 ####Some key features of the implementation:
 * if a measurements violates minimum or maximum value if a threshold, threshold is called "violated"
-* while a threshold is violated, but less than N times, we generate a "notice" level event
-* while a threshold is violated less than N times we send clear events as they appear
-* if a threshold is violated at least N times we generate events of a given severity and process escalation as usual MinMaxThreshold. The threshold is marked as broken
+* while a threshold is violated, but less than N times out of last M measurements, we generate a "notice" level event
+* while a threshold is violated less than N times out of last M measurements, we send clear events as they appear
+* if a threshold is violated at least N times out of last M measurements, we generate events of a given severity and process escalation as usual MinMaxThreshold. The threshold is marked as broken
 * if a threshold was broken we are waiting till K "good" measurements in a row to send a clearing event
 * service restart doesn't affect nor events history, nor thresholds breaks state 
 
