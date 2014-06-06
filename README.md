@@ -13,7 +13,7 @@ So if you have M = 12, N=7 and K=6 then this threshold stores history of 12 meas
 General recommendation is to keep N and K less than M (or the whole thing won't work), have N+K>M, so that you won't have flapping service.
 
 ####Some key features of the implementation:
-* if a measurements violates minimum or maximum value if a threshold, threshold is called "violated"
+* if a measurements violates minimum or maximum value of a threshold, threshold is called "violated"
 * while a threshold is violated, but less than N times out of last M measurements, we generate a "notice" level event
 * while a threshold is violated less than N times out of last M measurements, we send clear events as they appear
 * if a threshold is violated at least N times out of last M measurements, we generate events of a given severity and process escalation as usual MinMaxThreshold. The threshold is marked as broken
