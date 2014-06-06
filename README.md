@@ -13,11 +13,12 @@ So if you have M = 12, N=7 and K=6 then this threshold stores history of 12 meas
 General recommendation is to keep N and K less than M (or the whole thing won't work), have N+K>M, so that you won't have flapping service.
 
 ####Some key features of the implementation:
-* while a threshold is broken, but less than N times, we generate a "notice" level event
-* while a threshold is broken less than N times we send clear events as they appear
-* if a threshold is broken at least N times we generate events of a given severity and process escalation as usual MinMaxThreshold
-* if a threshold was broken at least N times we are waiting till K "good" measurements in a row to send a clearing event
-* service restart doesn't affect events history
+* if a measurements violates minimum or maximum value if a threshold, threshold is called "violated"
+* while a threshold is violated, but less than N times, we generate a "notice" level event
+* while a threshold is violated less than N times we send clear events as they appear
+* if a threshold is violated at least N times we generate events of a given severity and process escalation as usual MinMaxThreshold. The threshold is marked as broken
+* if a threshold was broken we are waiting till K "good" measurements in a row to send a clearing event
+* service restart doesn't affect nor events history, nor thresholds breaks state 
 
 ####Implementation details
 Implementation stores a list of M elements (0 for a good measurement and 1 for a bad measurement) in a deque class object which is loaded from a pickle every check time.
