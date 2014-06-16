@@ -41,9 +41,9 @@ class IHystThresholdInfo(IThresholdInfo):
                 Clear event will be generated only after \
                 K(Good Measurements Count) sequential \
                 clear measurements.<br> Bad Measurements Count',
-        order=12, default="1")
+        order=12, default=u"1")
     goodCount = schema.TextLine(
-        title=u'Good Measurements Count', order=13, default="1")
+        title=u'Good Measurements Count', order=13, default=u"1")
     queueSize = schema.TextLine(
-        title=u'Measurement Queue Size', order=14, default="1")
+        title=u'Measurement Queue Size', order=14, default=u"1")
     escalateCount = schema.Int(title=_t(u'Escalate Count'), order=11)
