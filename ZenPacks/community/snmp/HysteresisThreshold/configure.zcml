@@ -14,11 +14,6 @@
              for=".thresholds.HystThreshold.HystThreshold"
              provides=".interfaces.IHystThresholdInfo"/>
 
-    <browser:page name="editHystThreshold"
-             for=".thresholds.HystThreshold.HystThreshold"
-             template="skins/editHystThreshold.pt"
-             permission="zenoss.View"
-             />
     </configure>
 </configure>
 

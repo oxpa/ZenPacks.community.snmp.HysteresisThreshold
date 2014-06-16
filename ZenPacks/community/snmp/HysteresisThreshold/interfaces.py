@@ -28,14 +28,22 @@ else:
     SingleLineText = schema.Text
     MultiLineText = schema.TextLine
 
+
 class IHystThresholdInfo(IThresholdInfo):
     """
     Adapts the HystThreshold Class
     """
     minval = schema.TextLine(title=_t(u'Minimum Value'), order=6)
     maxval = schema.TextLine(title=u'Maximum Value', order=7)
-    n = schema.TextLine(title=u'An alert will be raised if N of M measurements failed<br/>Clear event will be generated only after K sequential clear measurements.<br> N', order=12)
-    m = schema.TextLine(title=u'M', order=13)
-    k = schema.TextLine(title=u'K', order=14)
+    badCount = schema.TextLine(
+        title=u'An alert will be raised if N(Bad Measurements Count) \
+                of M(Measurements Queue Size) measurements failed<br/> \
+                Clear event will be generated only after \
+                K(Good Measurements Count) sequential \
+                clear measurements.<br> Bad Measurements Count',
+        order=12, default=u"1")
+    goodCount = schema.TextLine(
+        title=u'Good Measurements Count', order=13, default=u"1")
+    queueSize = schema.TextLine(
+        title=u'Measurement Queue Size', order=14, default=u"1")
     escalateCount = schema.Int(title=_t(u'Escalate Count'), order=11)
-
