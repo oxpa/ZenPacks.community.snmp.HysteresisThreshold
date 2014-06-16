@@ -3,11 +3,16 @@
 # or saved.  Do not modify them directly here.
 # NB: PACKAGES is deprecated
 NAME = "ZenPacks.community.snmp.HysteresisThreshold"
-VERSION = "0.9.0"
+VERSION = "0.9.0.1"
 AUTHOR = "Oxpa"
 LICENSE = "GPLv2"
-NAMESPACE_PACKAGES = ['ZenPacks', 'ZenPacks.community', 'ZenPacks.community.snmp']
-PACKAGES = ['ZenPacks', 'ZenPacks.community', 'ZenPacks.community.snmp', 'ZenPacks.community.snmp.HysteresisThreshold']
+NAMESPACE_PACKAGES = ['ZenPacks',
+                      'ZenPacks.community',
+                      'ZenPacks.community.snmp']
+PACKAGES = ['ZenPacks',
+            'ZenPacks.community',
+            'ZenPacks.community.snmp',
+            'ZenPacks.community.snmp.HysteresisThreshold']
 INSTALL_REQUIRES = []
 COMPAT_ZENOSS_VERS = ""
 PREV_ZENPACK_NAME = ""
