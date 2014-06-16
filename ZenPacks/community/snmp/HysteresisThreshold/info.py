@@ -19,6 +19,7 @@ from Products.Zuul.interfaces import template as templateInterfaces
 from Products.Zuul.decorators import info
 from ZenPacks.community.snmp.HysteresisThreshold import interfaces
 
+
 class HystThresholdInfo(ThresholdInfo):
     implements(interfaces.IHystThresholdInfo)
     minval = ProxyProperty("minval")
@@ -27,4 +28,3 @@ class HystThresholdInfo(ThresholdInfo):
     m = ProxyProperty("m")
     k = ProxyProperty("k")
     escalateCount = ProxyProperty("escalateCount")
-
