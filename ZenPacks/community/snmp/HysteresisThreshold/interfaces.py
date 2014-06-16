@@ -36,9 +36,9 @@ class IHystThresholdInfo(IThresholdInfo):
     minval = schema.TextLine(title=_t(u'Minimum Value'), order=6)
     maxval = schema.TextLine(title=u'Maximum Value', order=7)
     n = schema.TextLine(
-        title=u'''An alert will be raised if N of M measurements failed<br/>
-                  Clear event will be generated only after K sequential
-                  clear measurements.<br> N''',
+        title=u'An alert will be raised if N of M measurements failed<br/> \
+                  Clear event will be generated only after K sequential \
+                  clear measurements.<br> N',
         order=12)
     m = schema.TextLine(title=u'M', order=13)
     k = schema.TextLine(title=u'K', order=14)
