@@ -48,7 +48,9 @@ class HystThreshold(ThresholdClass):
 
     minval = ""
     maxval = ""
-    n = m = k = ""
+    badCount = ""
+    queueSize = ""
+    goodCount = ""
     eventClass = Perf_Snmp
     severity = 3
     escalateCount = 0
@@ -56,12 +58,12 @@ class HystThreshold(ThresholdClass):
     _properties = ThresholdClass._properties + (
         {'id': 'minval',        'type': 'string', 'mode': 'w'},
         {'id': 'maxval',        'type': 'string', 'mode': 'w'},
-        {'id': 'n',             'type': 'string', 'mode': 'w',
+        {'id': 'badCount',      'type': 'string', 'mode': 'w',
          'label': 'An alert will be raised if N of M measurements failed<br/>'
                   'Clear event will be generated only '
                   'after K sequential clear measurements'},
-        {'id': 'm',             'type': 'string', 'mode': 'w'},
-        {'id': 'k',             'type': 'string', 'mode': 'w'},
+        {'id': 'queueSize',     'type': 'string', 'mode': 'w'},
+        {'id': 'goodCount',     'type': 'string', 'mode': 'w'},
         {'id': 'escalateCount', 'type': 'int',    'mode': 'w'}
         )
 
@@ -88,9 +90,9 @@ class HystThreshold(ThresholdClass):
                                     self.dsnames,
                                     minval=self.getMinval(context),
                                     maxval=self.getMaxval(context),
-                                    n=self.getHystN(context),
-                                    m=self.getHystM(context),
-                                    k=self.getHystK(context),
+                                    badCount=self.getHystN(context),
+                                    queueSize=self.getHystM(context),
+                                    goodCount=self.getHystK(context),
                                     eventClass=self.eventClass,
                                     severity=self.severity,
                                     escalateCount=self.escalateCount)
@@ -135,56 +137,56 @@ class HystThreshold(ThresholdClass):
     def getHystN(self, context):
         """
         """
-        n = 0
-        if self.n:
+        badCount = 0
+        if self.badCount:
             try:
-                express = "python:%s" % self.n
-                n = talesEval(express, context)
+                express = "python:%s" % self.badCount
+                badCount = talesEval(express, context)
             except:
                 msg = (
                     "User-supplied Python expression (%s) for "
                     "hysteresis N value caused error: %s"
-                    ) % (self.n,  self.dsnames)
+                    ) % (self.badCount,  self.dsnames)
                 log.error(msg)
                 raise pythonThresholdException(msg)
-                n = 0
-        return n
+                badCount = 0
+        return badCount
 
     def getHystM(self, context):
         """
         """
-        m = 0
-        if self.m:
+        queueSize = 0
+        if self.queueSize:
             try:
-                express = "python:%s" % self.m
-                m = talesEval(express, context)
+                express = "python:%s" % self.queueSize
+                queueSize = talesEval(express, context)
             except:
                 msg = (
                     "User-supplied Python expression (%s) for "
                     "hysteresis M value caused error: %s"
-                    ) % (self.m,  self.dsnames)
+                    ) % (self.queueSize,  self.dsnames)
                 log.error(msg)
                 raise pythonThresholdException(msg)
-                m = 0
-        return m
+                queueSize = 0
+        return queueSize
 
     def getHystK(self, context):
         """
         """
-        k = 0
-        if self.k:
+        goodCount = 0
+        if self.goodCount:
             try:
-                express = "python:%s" % self.k
-                k = talesEval(express, context)
+                express = "python:%s" % self.goodCount
+                goodCount = talesEval(express, context)
             except:
                 msg = (
                     "User-supplied Python expression (%s) for "
                     "hysteresis K value caused error: %s"
-                    ) % (self.k,  self.dsnames)
+                    ) % (self.goodCount,  self.dsnames)
                 log.error(msg)
                 raise pythonThresholdException(msg)
-                k = 0
-        return k
+                goodCount = 0
+        return goodCount
 
 
 InitializeClass(HystThreshold)
@@ -199,7 +201,8 @@ class HystThresholdInstance(RRDThresholdInstance):
     hystFlag = {}
 
     def __init__(self, id, context, dpNames,
-                 minval, maxval, n, m, k, eventClass, severity, escalateCount):
+                 minval, maxval, badCount, queueSize, goodCount,
+                 eventClass, severity, escalateCount):
         RRDThresholdInstance.__init__(self, id, context, dpNames,
                                       eventClass, severity)
         self.count = {}
@@ -207,9 +210,9 @@ class HystThresholdInstance(RRDThresholdInstance):
         self.hystFlag = {}
         self.minimum = minval
         self.maximum = maxval
-        self.n = n
-        self.m = m
-        self.k = k
+        self.badCount = badCount
+        self.queueSize = queueSize
+        self.goodCount = goodCount
         self.escalateCount = escalateCount
 
     def hystCountKey(self, dp):
@@ -281,7 +284,7 @@ class HystThresholdInstance(RRDThresholdInstance):
         self.loadHystState()
 
         # if start hysteresis is not set - just return 0
-        if self.m <= 0:
+        if self.queueSize <= 0:
             return 0
 
         countKey = self.hystCountKey(dp)
@@ -292,14 +295,14 @@ class HystThresholdInstance(RRDThresholdInstance):
         if bad:
             return self.hystCount[countKey].count(bad)
         else:
-            return list(self.hystCount[countKey])[-self.k:].count(bad)
+            return list(self.hystCount[countKey])[-self.goodCount:].count(bad)
 
     def setHystFlag(self, dp, state):
         self.hystFlag[self.hystCountKey(dp)] = state
         self.saveHystState()
 
     def resetHystCount(self, dp):
-        self.hystCount[self.hystCountKey(dp)] = deque(maxlen=self.m)
+        self.hystCount[self.hystCountKey(dp)] = deque(maxlen=self.queueSize)
         self.hystFlag[self.hystCountKey(dp)] = 0
         self.saveHystState()
 
@@ -310,9 +313,11 @@ class HystThresholdInstance(RRDThresholdInstance):
         'Check the value for min/max thresholds'
         log.debug(
             ("Checking %s %s against min %s, max %s, "
-             "n '%s'('%s'), m '%s', k '%s',  hystKey %s"),
-            dp, value, self.minimum, self.maximum, self.n,
-            self.getHystCount(dp), self.m, self.k, self.hystCountKey(dp))
+             "badCount '%s'('%s'), queueSize '%s', "
+             "goodCount '%s',  hystKey %s"),
+            dp, value, self.minimum, self.maximum, self.badCount,
+            self.getHystCount(dp), self.queueSize,
+            self.goodCount, self.hystCountKey(dp))
         if value is None:
             return []
         if isinstance(value, basestring):
@@ -343,10 +348,11 @@ class HystThresholdInstance(RRDThresholdInstance):
         if thresh is not None:
             severity = 2  # self.severity
             hystCount = self.incrementHystCount(dp, 1)
-            # if current hysteresis count at least reached a limit of 'self.n'
+            # if current hysteresis count at least reached
+            # a limit of 'self.badCount'
             # restore original severity and mark a threshold as violated
             # begin event counting for escalation
-            if (self.n - 1) < hystCount or \
+            if (self.badCount - 1) < hystCount or \
                     self.hystFlag[self.hystCountKey(dp)] == 1:
                 severity = self.severity
                 count = self.incrementCount(dp)
@@ -372,7 +378,7 @@ class HystThresholdInstance(RRDThresholdInstance):
                     self._create_event_dict(value, summary, Event.Clear))
             else:
                 #if hysteresis enabled wait till at least K clearing events
-                if hystCount < self.k:
+                if hystCount < self.goodCount:
                     return []
                 else:
                     # at least K clearing events. Allow faster clearing

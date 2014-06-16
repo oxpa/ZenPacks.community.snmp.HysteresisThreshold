@@ -35,15 +35,15 @@ class IHystThresholdInfo(IThresholdInfo):
     """
     minval = schema.TextLine(title=_t(u'Minimum Value'), order=6)
     maxval = schema.TextLine(title=u'Maximum Value', order=7)
-    n = schema.TextLine(
-        title=u'An alert will be raised if N(Failed Measurements Count) \
-                of M(Stored Measurements Count) measurements failed<br/> \
+    badCount = schema.TextLine(
+        title=u'An alert will be raised if N(Bad Measurements Count) \
+                of M(Measurements Queue Size) measurements failed<br/> \
                 Clear event will be generated only after \
-                K(Clear Measurements Count) sequential \
-                clear measurements.<br> Failed Measurements Count',
+                K(Good Measurements Count) sequential \
+                clear measurements.<br> Bad Measurements Count',
         order=12, default="1")
-    m = schema.TextLine(
-        title=u'Stored Measurements Count', order=13, default="1")
-    k = schema.TextLine(
-        title=u'Clear Measurements Count', order=14, default="1")
+    goodCount = schema.TextLine(
+        title=u'Good Measurements Count', order=13, default="1")
+    queueSize = schema.TextLine(
+        title=u'Measurement Queue Size', order=14, default="1")
     escalateCount = schema.Int(title=_t(u'Escalate Count'), order=11)
